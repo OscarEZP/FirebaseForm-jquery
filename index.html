@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container">
+    <div class="row">
+        <div class="col-6 offset-3">
+            <h3>Agregar nuevo usuario</h3><br>
+            <div class="form-group">
+                <label for="name">Nombre</label>
+
+                <input type="text" class="form-control" id="name">
+                <label for="name">Apellido</label>
+                <input type="text" class="form-control" id="lastname">
+                <label for="name">Email</label>
+                <input type="text" class="form-control" id="email">
+                <label for="name">Telefono</label>
+                <input type="text" class="form-control" id="phone"><br>
+
+                <button class="btn btn-primary" id="enviar">Enviar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<hr>
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+
+            <div class="col-3">
+                <h3>Lista de usuarios registrados</h3>
+            </div>
+            <br>
+
+            <div class="row">
+
+                <div class="col-6" id="list">
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" crossorigin="anonymous"></script>
+<script src="https://www.gstatic.com/firebasejs/4.3.0/firebase.js"></script>
+<script>
+    // Initialize Firebase
+    var config = {
+        apiKey: "AIzaSyDah6SiSEU_nKOvqWtfbVISuHGa4cEo-C8",
+        authDomain: "portafolio-50622.firebaseapp.com",
+        databaseURL: "https://portafolio-50622.firebaseio.com",
+        projectId: "portafolio-50622",
+        storageBucket: "portafolio-50622.appspot.com",
+        messagingSenderId: "185348895225"
+    };
+    firebase.initializeApp(config);
+    var database = firebase.database();
+
+    var data = {};
+    $(document).on('click', '#enviar', function () {
+        data.name = $('#name').val();
+        data.email = $('#email').val();
+        data.lastname = $('#lastname').val();
+        data.phone = $('#phone').val();
+
+        database.ref('users/').push({
+            name: data.name,
+            lastname: data.lastname,
+            email: data.email,
+            phone: data.phone
+        });
+
+        return true;
+    });
+    database.ref('users/').on('value', function (snap) {
+        $('#list').empty();
+        snap.forEach(function (userSnap) {
+            $('#list').append('<div class="list-group"><a href="#" class="list-group-item list-group-item-action flex-column align-items-start">' +
+                '<div class="d-flex w-100 justify-content-between">' +
+                '<h5 class="mb-1">'+userSnap.val().name+ ' ' +userSnap.val().lastname+'</h5>' +
+                '</div>' +
+                '<p class="mb-1">'+userSnap.val().email+'</p>' +
+                '<small class="text-muted">'+userSnap.val().phone+'</small>'+
+                '</div>');
+        })
+    });
+
+
+</script>
+</body>
+</html>
